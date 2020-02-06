@@ -131,7 +131,7 @@ exports.identificarReferencia = (codigo) => {
  */
 exports.identificarData = (codigo, tipoCodigo) => {
     codigo = codigo.replace(/[^0-9]/g, '');
-    const tipoBoleto = this.identificarTipoBoleto(codigo);
+    const tipoBoleto = exports.identificarTipoBoleto(codigo);
 
     let fatorData = '';
     let dataBoleto = new Date();
@@ -175,7 +175,7 @@ exports.identificarData = (codigo, tipoCodigo) => {
  */
 exports.identificarValorCodBarrasArrecadacao = (codigo, tipoCodigo) => {
     codigo = codigo.replace(/[^0-9]/g, '');
-    const isValorEfetivo = this.identificarReferencia(codigo).efetivo;
+    const isValorEfetivo = exports.identificarReferencia(codigo).efetivo;
 
     let valorBoleto = '';
     let valorFinal;
@@ -220,7 +220,7 @@ exports.identificarValorCodBarrasArrecadacao = (codigo, tipoCodigo) => {
  */
 exports.identificarValor = (codigo, tipoCodigo) => {
 
-    const tipoBoleto = this.identificarTipoBoleto(codigo);
+    const tipoBoleto = exports.identificarTipoBoleto(codigo);
 
     let valorBoleto = '';
     let valorFinal;
@@ -236,7 +236,7 @@ exports.identificarValor = (codigo, tipoCodigo) => {
                 char = valorFinal.substr(1, 1);
             }
         } else {
-            valorFinal = this.identificarValorCodBarrasArrecadacao(codigo, 'CODIGO_DE_BARRAS');
+            valorFinal = exports.identificarValorCodBarrasArrecadacao(codigo, 'CODIGO_DE_BARRAS');
         }
 
     } else if (tipoCodigo == 'LINHA_DIGITAVEL') {
@@ -250,7 +250,7 @@ exports.identificarValor = (codigo, tipoCodigo) => {
                 char = valorFinal.substr(1, 1);
             }
         } else {
-            valorFinal = this.identificarValorCodBarrasArrecadacao(codigo, 'LINHA_DIGITAVEL');
+            valorFinal = exports.identificarValorCodBarrasArrecadacao(codigo, 'LINHA_DIGITAVEL');
         }
     }
     return parseFloat(valorFinal);
@@ -272,10 +272,10 @@ exports.digitosVerificadores = (codigo, mod) => {
     codigo = codigo.replace(/[^0-9]/g, '');
     switch (mod) {
         case 10:
-            return (codigo + this.calculaMod10(codigo)).toString();
+            return (codigo + exports.calculaMod10(codigo)).toString();
             break;
         case 11:
-            return (codigo + this.calculaMod11(codigo)).toString();
+            return (codigo + exports.calculaMod11(codigo)).toString();
             break;
         default:
             break;
@@ -297,16 +297,16 @@ exports.digitosVerificadores = (codigo, mod) => {
 exports.codBarras2LinhaDigitavel = (codigo, formatada) => {
     codigo = codigo.replace(/[^0-9]/g, '');
 
-    const tipoBoleto = this.identificarTipoBoleto(codigo);
+    const tipoBoleto = exports.identificarTipoBoleto(codigo);
 
     let resultado = '';
 
     if (tipoBoleto == 'BANCO') {
         const novaLinha = codigo.substr(0, 4) + codigo.substr(19, 25) + codigo.substr(4, 1) + codigo.substr(5, 14);
 
-        const bloco1 = novaLinha.substr(0, 9) + this.calculaMod10(novaLinha.substr(0, 9));
-        const bloco2 = novaLinha.substr(9, 10) + this.calculaMod10(novaLinha.substr(9, 10));
-        const bloco3 = novaLinha.substr(19, 10) + this.calculaMod10(novaLinha.substr(19, 10));
+        const bloco1 = novaLinha.substr(0, 9) + exports.calculaMod10(novaLinha.substr(0, 9));
+        const bloco2 = novaLinha.substr(9, 10) + exports.calculaMod10(novaLinha.substr(9, 10));
+        const bloco3 = novaLinha.substr(19, 10) + exports.calculaMod10(novaLinha.substr(19, 10));
         const bloco4 = novaLinha.substr(29);
 
         resultado = (bloco1 + bloco2 + bloco3 + bloco4).toString();
@@ -330,22 +330,22 @@ exports.codBarras2LinhaDigitavel = (codigo, formatada) => {
                 resultado.slice(33);
         }
     } else {
-        const identificacaoValorRealOuReferencia = this.identificarReferencia(codigo);
+        const identificacaoValorRealOuReferencia = exports.identificarReferencia(codigo);
         let bloco1;
         let bloco2;
         let bloco3;
         let bloco4;
 
         if (identificacaoValorRealOuReferencia.mod == 10) {
-            bloco1 = codigo.substr(0, 11) + this.calculaMod10(codigo.substr(0, 11));
-            bloco2 = codigo.substr(11, 11) + this.calculaMod10(codigo.substr(11, 11));
-            bloco3 = codigo.substr(22, 11) + this.calculaMod10(codigo.substr(22, 11));
-            bloco4 = codigo.substr(33, 11) + this.calculaMod10(codigo.substr(33, 11));
+            bloco1 = codigo.substr(0, 11) + exports.calculaMod10(codigo.substr(0, 11));
+            bloco2 = codigo.substr(11, 11) + exports.calculaMod10(codigo.substr(11, 11));
+            bloco3 = codigo.substr(22, 11) + exports.calculaMod10(codigo.substr(22, 11));
+            bloco4 = codigo.substr(33, 11) + exports.calculaMod10(codigo.substr(33, 11));
         } else if (identificacaoValorRealOuReferencia.mod == 11) {
-            bloco1 = codigo.substr(0, 11) + this.calculaMod11(codigo.substr(0, 11));
-            bloco2 = codigo.substr(11, 11) + this.calculaMod11(codigo.substr(11, 11));
-            bloco3 = codigo.substr(22, 11) + this.calculaMod11(codigo.substr(22, 11));
-            bloco4 = codigo.substr(33, 11) + this.calculaMod11(codigo.substr(33, 11));
+            bloco1 = codigo.substr(0, 11) + exports.calculaMod11(codigo.substr(0, 11));
+            bloco2 = codigo.substr(11, 11) + exports.calculaMod11(codigo.substr(11, 11));
+            bloco3 = codigo.substr(22, 11) + exports.calculaMod11(codigo.substr(22, 11));
+            bloco4 = codigo.substr(33, 11) + exports.calculaMod11(codigo.substr(33, 11));
         }
 
         resultado = bloco1 + bloco2 + bloco3 + bloco4;
@@ -368,7 +368,7 @@ exports.codBarras2LinhaDigitavel = (codigo, formatada) => {
 exports.linhaDigitavel2CodBarras = (codigo) => {
     codigo = codigo.replace(/[^0-9]/g, '');
 
-    const tipoBoleto = this.identificarTipoBoleto(codigo);
+    const tipoBoleto = exports.identificarTipoBoleto(codigo);
 
     let resultado = '';
 
@@ -415,9 +415,9 @@ exports.calculaDVCodBarras = (codigo, posicaoCodigo, mod) => {
     codigo = codigo.join('');
 
     if (mod === 10) {
-        return this.calculaMod10(codigo);
+        return exports.calculaMod10(codigo);
     } else if (mod === 11) {
-        return this.calculaMod11(codigo);
+        return exports.calculaMod11(codigo);
     }
 }
 
@@ -434,57 +434,57 @@ exports.calculaDVCodBarras = (codigo, posicaoCodigo, mod) => {
  */
 exports.validarCodigoComDV = (codigo) => {
     codigo = codigo.replace(/[^0-9]/g, '');
-    let tipoCodigo = this.identificarTipoCodigo(codigo);
+    let tipoCodigo = exports.identificarTipoCodigo(codigo);
     let tipoBoleto;
 
     let resultado;
 
     if (tipoCodigo === 'LINHA_DIGITAVEL') {
-        tipoBoleto = this.identificarTipoBoleto(codigo, 'LINHA_DIGITAVEL');
+        tipoBoleto = exports.identificarTipoBoleto(codigo, 'LINHA_DIGITAVEL');
 
         if (tipoBoleto == 'BANCO') {
-            const bloco1 = codigo.substr(0, 9) + this.calculaMod10(codigo.substr(0, 9));
-            const bloco2 = codigo.substr(10, 10) + this.calculaMod10(codigo.substr(10, 10));
-            const bloco3 = codigo.substr(21, 10) + this.calculaMod10(codigo.substr(21, 10));
+            const bloco1 = codigo.substr(0, 9) + exports.calculaMod10(codigo.substr(0, 9));
+            const bloco2 = codigo.substr(10, 10) + exports.calculaMod10(codigo.substr(10, 10));
+            const bloco3 = codigo.substr(21, 10) + exports.calculaMod10(codigo.substr(21, 10));
             const bloco4 = codigo.substr(32, 1);
             const bloco5 = codigo.substr(33);
 
             resultado = (bloco1 + bloco2 + bloco3 + bloco4 + bloco5).toString();
         } else {
-            const identificacaoValorRealOuReferencia = this.identificarReferencia(codigo);
+            const identificacaoValorRealOuReferencia = exports.identificarReferencia(codigo);
             let bloco1;
             let bloco2;
             let bloco3;
             let bloco4;
 
             if (identificacaoValorRealOuReferencia.mod == 10) {
-                bloco1 = codigo.substr(0, 11) + this.calculaMod10(codigo.substr(0, 11));
-                bloco2 = codigo.substr(12, 11) + this.calculaMod10(codigo.substr(12, 11));
-                bloco3 = codigo.substr(24, 11) + this.calculaMod10(codigo.substr(24, 11));
-                bloco4 = codigo.substr(36, 11) + this.calculaMod10(codigo.substr(36, 11));
+                bloco1 = codigo.substr(0, 11) + exports.calculaMod10(codigo.substr(0, 11));
+                bloco2 = codigo.substr(12, 11) + exports.calculaMod10(codigo.substr(12, 11));
+                bloco3 = codigo.substr(24, 11) + exports.calculaMod10(codigo.substr(24, 11));
+                bloco4 = codigo.substr(36, 11) + exports.calculaMod10(codigo.substr(36, 11));
             } else if (identificacaoValorRealOuReferencia.mod == 11) {
-                bloco1 = codigo.substr(0, 11) + this.calculaMod11(codigo.substr(0, 11));
-                bloco2 = codigo.substr(12, 11) + this.calculaMod11(codigo.substr(12, 11));
-                bloco3 = codigo.substr(24, 11) + this.calculaMod11(codigo.substr(24, 11));
-                bloco4 = codigo.substr(36, 11) + this.calculaMod11(codigo.substr(36, 11));
+                bloco1 = codigo.substr(0, 11) + exports.calculaMod11(codigo.substr(0, 11));
+                bloco2 = codigo.substr(12, 11) + exports.calculaMod11(codigo.substr(12, 11));
+                bloco3 = codigo.substr(24, 11) + exports.calculaMod11(codigo.substr(24, 11));
+                bloco4 = codigo.substr(36, 11) + exports.calculaMod11(codigo.substr(36, 11));
             }
 
             resultado = bloco1 + bloco2 + bloco3 + bloco4;
         }
     } else if (tipoCodigo === 'CODIGO_DE_BARRAS') {
-        tipoBoleto = this.identificarTipoBoleto(codigo, 'CODIGO_DE_BARRAS');
+        tipoBoleto = exports.identificarTipoBoleto(codigo, 'CODIGO_DE_BARRAS');
 
         if (tipoBoleto == 'BANCO') {
-            const DV = this.calculaDVCodBarras(codigo, 4, 11);
+            const DV = exports.calculaDVCodBarras(codigo, 4, 11);
             resultado = codigo.substr(0, 4) + DV + codigo.substr(5);
         } else {
-            const identificacaoValorRealOuReferencia = this.identificarReferencia(codigo);
+            const identificacaoValorRealOuReferencia = exports.identificarReferencia(codigo);
 
             resultado = codigo.split('');
             resultado.splice(3, 1);
             resultado = resultado.join('');
 
-            const DV = this.calculaDVCodBarras(codigo, 3, identificacaoValorRealOuReferencia.mod);
+            const DV = exports.calculaDVCodBarras(codigo, 3, identificacaoValorRealOuReferencia.mod);
             
             resultado = resultado.substr(0, 3) + DV + resultado.substr(3);
 
@@ -508,15 +508,15 @@ exports.validarCodigoComDV = (codigo) => {
 exports.geraCodBarras = (codigo) => {
     codigo = codigo.replace(/[^0-9]/g, '');
 
-    const tipoBoleto = this.identificarTipoBoleto(codigo);
+    const tipoBoleto = exports.identificarTipoBoleto(codigo);
 
     let novoCodigo;
 
-    novoCodigo = this.linhaDigitavel2CodBarras(codigo);
+    novoCodigo = exports.linhaDigitavel2CodBarras(codigo);
     novoCodigo = novoCodigo.split('');
     novoCodigo.splice(4, 1);
     novoCodigo = novoCodigo.join('');
-    let dv = this.calculaMod11(novoCodigo);
+    let dv = exports.calculaMod11(novoCodigo);
     novoCodigo = novoCodigo.substr(0, 4) + dv + novoCodigo.substr(4);
 
     return novoCodigo;
@@ -628,7 +628,7 @@ exports.validarBoleto = (codigo) => {
         retorno.sucesso = false;
         retorno.codigoInput = codigo;
         retorno.mensagem = 'Este tipo de boleto deve possuir um código de barras 44 caracteres numéricos. Ou linha digitável de 48 caracteres numéricos.';
-    } else if (!this.validarCodigoComDV(codigo)) {
+    } else if (!exports.validarCodigoComDV(codigo)) {
         retorno.sucesso = false;
         retorno.codigoInput = codigo;
         retorno.mensagem = 'A validação do dígito verificador falhou. Tem certeza que inseriu a numeração correta?';
@@ -636,24 +636,24 @@ exports.validarBoleto = (codigo) => {
         retorno.sucesso = true;
         retorno.codigoInput = codigo;
         retorno.mensagem = 'Boleto válido';
-        let tipoCodigo = this.identificarTipoCodigo(codigo);
+        let tipoCodigo = exports.identificarTipoCodigo(codigo);
 
         switch (tipoCodigo) {
             case 'LINHA_DIGITAVEL':
                 retorno.tipoCodigoInput = 'LINHA_DIGITAVEL';
-                retorno.tipoBoleto = this.identificarTipoBoleto(codigo, 'LINHA_DIGITAVEL');
-                retorno.codigoBarras = this.linhaDigitavel2CodBarras(codigo);
+                retorno.tipoBoleto = exports.identificarTipoBoleto(codigo, 'LINHA_DIGITAVEL');
+                retorno.codigoBarras = exports.linhaDigitavel2CodBarras(codigo);
                 retorno.linhaDigitavel = codigo;
-                retorno.vencimento = this.identificarData(codigo, 'LINHA_DIGITAVEL');
-                retorno.valor = this.identificarValor(codigo, 'LINHA_DIGITAVEL');
+                retorno.vencimento = exports.identificarData(codigo, 'LINHA_DIGITAVEL');
+                retorno.valor = exports.identificarValor(codigo, 'LINHA_DIGITAVEL');
                 break;
             case 'CODIGO_DE_BARRAS':
                 retorno.tipoCodigoInput = 'CODIGO_DE_BARRAS';
-                retorno.tipoBoleto = this.identificarTipoBoleto(codigo, 'CODIGO_DE_BARRAS');
+                retorno.tipoBoleto = exports.identificarTipoBoleto(codigo, 'CODIGO_DE_BARRAS');
                 retorno.codigoBarras = codigo;
-                retorno.linhaDigitavel = this.codBarras2LinhaDigitavel(codigo, false);
-                retorno.vencimento = this.identificarData(codigo, 'CODIGO_DE_BARRAS');
-                retorno.valor = this.identificarValor(codigo, 'CODIGO_DE_BARRAS');
+                retorno.linhaDigitavel = exports.codBarras2LinhaDigitavel(codigo, false);
+                retorno.vencimento = exports.identificarData(codigo, 'CODIGO_DE_BARRAS');
+                retorno.valor = exports.identificarValor(codigo, 'CODIGO_DE_BARRAS');
                 break;
             default:
                 break;
